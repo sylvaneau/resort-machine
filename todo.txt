@@ -1,0 +1,2 @@
+- a chaque détection d'un nouveau centroid recherche de fusion avec existants (sur l'axe y)
+- log détaillés avec création d'images et log des valeurs
