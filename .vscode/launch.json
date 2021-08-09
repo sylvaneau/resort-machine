@@ -16,7 +16,7 @@
             "type": "python",
             "request": "launch",
             "program": "ResistorScanner.py",
-            "args": ["-i", "./samples/resistor1.jpeg"],
+            "args": ["-i", "./test-data/resistor1.jpeg"],
             "console": "integratedTerminal"
         },
         {
@@ -24,7 +24,7 @@
             "type": "python",
             "request": "launch",
             "program": "./tools/range-detector.py",
-            "args": ["-i", "./samples/resistor1.jpeg"],
+            "args": ["-i", "./test-data/resistor1.jpeg"],
             "console": "integratedTerminal"
         }
     ]
