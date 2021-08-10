@@ -1,3 +1,3 @@
 from . import core
 
-core.main()
+core.run()

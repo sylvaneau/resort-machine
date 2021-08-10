@@ -8,15 +8,18 @@
             "name": "Python : ResistorScanner - from camera",
             "type": "python",
             "request": "launch",
-            "program": "ResistorScanner.py",
+            "module": "rescan",
             "console": "integratedTerminal"
         },
         {
             "name": "Python : ResistorScanner - from samples",
             "type": "python",
             "request": "launch",
-            "program": "ResistorScanner.py",
-            "args": ["-i", "./test-data/resistor1.jpeg"],
+            "module": "rescan",
+            "args": [
+                "-i",
+                "./test-data/resistor1.jpeg"
+            ],
             "console": "integratedTerminal"
         },
         {
@@ -24,7 +27,10 @@
             "type": "python",
             "request": "launch",
             "program": "./tools/range-detector.py",
-            "args": ["-i", "./test-data/resistor1.jpeg"],
+            "args": [
+                "-i",
+                "./test-data/resistor1.jpeg"
+            ],
             "console": "integratedTerminal"
         }
     ]
