@@ -1,3 +1,4 @@
-from . import core
+from rescan import core
 
-core.run()
+if __name__ == '__main__':
+    core.run()

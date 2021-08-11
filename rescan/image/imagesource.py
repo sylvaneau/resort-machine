@@ -1,13 +1,15 @@
 from abc import abstractmethod
 import time
 import cv2
-import picamera
-import picamera.array
+#import picamera
+#import picamera.array
 
 class ImageSource:
+    
     @abstractmethod
     def GetImage(self):
         pass
+
 
 class FileImageSource(ImageSource):
 
@@ -17,13 +19,11 @@ class FileImageSource(ImageSource):
     def GetImage(self):
         return cv2.imread(self.__filePath)
 
+
 class RaspCameraImageSource(ImageSource):
 
     def __init__(self):
         self.__camera = picamera.PiCamera(resolution=(2592, 1944), framerate=5)
-
-        # Set ISO to the desired value
-        self.__camera.iso = 100
 
         # Wait for the automatic gain control to settle
         time.sleep(3.0)

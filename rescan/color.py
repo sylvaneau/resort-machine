@@ -1,6 +1,3 @@
-
-from argparse import REMAINDER
-
 import cv2
 
 COLOR_NAME_BLACK = "BLACK"
@@ -16,9 +13,11 @@ COLOR_NAME_WHITE = "WHITE"
 COLOR_NAME_GOLD = "GOLD"
 COLOR_NAME_SILVER = "SILVER"
 
+
 class ColorCode:
 
-    def __init__(self, color_name, resistanceValue, multiplierValue, toleranceValue):
+    def __init__(self, color_name,
+                 resistanceValue, multiplierValue, toleranceValue):
         self.__colorName = color_name
         self.__resistanceValue = resistanceValue
         self.__multiplierValue = multiplierValue
@@ -43,7 +42,8 @@ class ColorCode:
 
 class ColorRange:
 
-    def __init__(self, lowerBound, upperBound, range_name: str, plot_color, color_code: ColorCode):
+    def __init__(self, lowerBound, upperBound, range_name: str, plot_color,
+                 color_code: ColorCode):
         self.__lowerBound = self.__checkRange(lowerBound)
         self.__upperBound = self.__checkRange(upperBound)
         self.__range_name = range_name
@@ -74,16 +74,16 @@ class ColorRange:
         h = hsv[0]
         s = hsv[1]
         v = hsv[2]
-        
+
         # H
         if not (h >= 0 & h <= 179):
             raise ValueError(h)
 
-        #S
+        # S
         if not (s >= 0 & s <= 255):
             raise ValueError(s)
 
-        #V
+        # V
         if not (v >= 0 & v <= 255):
             raise ValueError(v)
 
@@ -125,13 +125,20 @@ class ColorArea:
         
         return self.__boundingRectangle
 
+
 class ColorAreaGroup():
 
-    """docstring for ColorStrip."""
-    def __init__(self, color_code: ColorCode, color_areas: 'list[ColorArea]', boundingRectangle):
-        self.__colorCode = color_code
-        self.__colorAreas = color_areas
-        self.__boundingRectangle = boundingRectangle
+    def __init__(self, area: 'ColorArea'):
+        self.__colorCode = area.colorCode
+        self.__colorAreas: list[ColorArea] = []
+        self.__xMin: int = None
+        self.__xMax: int = None
+        
+        (x, _, w, _) = area.getBoundingRectangle()
+        self.__xMin = x
+        self.__xMax = x + w
+        
+        self.__colorAreas.append(area)
 
     @property
     def colorCode(self):
@@ -142,54 +149,52 @@ class ColorAreaGroup():
         return self.__colorAreas
 
     @property
-    def boundingRectangle(self):
-        return self.__boundingRectangle
+    def xMin(self):
+        return self.__xMin
+    
+    @property
+    def xMax(self):
+        return self.__xMax
 
-    def addArea(self, colorArea: ColorArea):
-        if self.__colorCode != colorArea.colorCode:
+    def mergeGroup(self, group: 'ColorAreaGroup'):
+        if self.__colorCode != group.colorCode:
             raise ValueError
-        
-        self.__colorAreas.append(colorArea)
-        self.__boundingRectangle = ColorAreaGroup.__mergeRectangles(self.__boundingRectangle, colorArea.getBoundingRectangle())
+            
+        self.__xMin = min(self.__xMin, group.xMin)
+        self.__xMax = max(self.__xMax, group.xMax)
+    
+        for area in group.colorAreas:
+            self.__colorAreas.append(area)
+            
+    def compute_xPos(self):
+        return (self.__xMin + self.__xMax) / 2
 
-    def __mergeRectangles(a, b):
-        x = min(a[0], b[0])
-        y = min(a[1], b[1])
-        w = max(a[0]+a[2], b[0]+b[2]) - x
-        h = max(a[1]+a[3], b[1]+b[3]) - y
-        return (x, y, w, h)
 
 class ColorStrip():
-    """docstring for ColorStrip."""
-    def __init__(self, color_code: ColorCode, color_areas: 'list[ColorArea]', boundingRectangle):
-        self.__colorCode = color_code
-        self.__colorAreas = color_areas
-        self.__boundingRectangle = boundingRectangle
+    
+    def __init__(self, group: ColorAreaGroup):
+        self.__colorCode = group.colorCode
+        self.__colorAreas = group.colorAreas
+        self.__xMin = group.xMin
+        self.__xMax = group.xMax
+        self.__xPos = group.compute_xPos()
 
     @property
     def colorCode(self):
         return self.__colorCode
-
+    
     @property
     def colorAreas(self):
         return self.__colorAreas
-
+    
     @property
-    def boundingRectangle(self):
-        return self.__boundingRectangle
-        
-
-# def addArea(self, colorArea: ColorArea):
-#         if self.__colorCode != colorArea.colorCode:
-#             raise ValueError
-        
-#         self.__colorAreas.append(colorArea)
-#         self.__boundingRectangle = ColorStrip.__mergeRectangles(self.__boundingRectangle, colorArea.getBoundingRectangle())
-
-#     def __mergeRectangles(a, b):
-#         x = min(a[0], b[0])
-#         y = min(a[1], b[1])
-#         w = max(a[0]+a[2], b[0]+b[2]) - x
-#         h = max(a[1]+a[3], b[1]+b[3]) - y
-#         return (x, y, w, h)
-
+    def xMin(self):
+        return self.__xMin
+    
+    @property
+    def xMax(self):
+        return self.__xMax
+    
+    @property
+    def xPos(self):
+        return self.__xPos

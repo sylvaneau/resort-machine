@@ -22,16 +22,5 @@
             ],
             "console": "integratedTerminal"
         },
-        {
-            "name": "Python : range-detector",
-            "type": "python",
-            "request": "launch",
-            "program": "./tools/range-detector.py",
-            "args": [
-                "-i",
-                "./test-data/resistor1.jpeg"
-            ],
-            "console": "integratedTerminal"
-        }
     ]
 }

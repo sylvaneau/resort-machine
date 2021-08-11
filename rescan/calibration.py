@@ -1,12 +1,20 @@
 import cv2
 import numpy as np
-import argparse
-import sys
+
+from rescan.image import imagesource, imageutils
+from rescan import settings
 
 def nothing(x):
     pass
 
-def start_calibration(image):
+def start_calibration_gui(imageSource: imagesource.ImageSource):
+    # logs
+    print("starting calibration, press 'q' to exit...")
+    
+    image = imageutils.getImage(imageSource)
+    image = imageutils.cropImageVertical(image, settings.CROP_IMAGE_Y, settings.CROP_IMAGE_HEIGHT)
+    image = imageutils.blurImage(image)
+    
     # Create a window
     cv2.namedWindow("image", cv2.WINDOW_NORMAL)
 
@@ -58,6 +66,7 @@ def start_calibration(image):
 
         # Display result image
         cv2.imshow('image', result)
+        
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
 
